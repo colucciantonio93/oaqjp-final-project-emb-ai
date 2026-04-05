@@ -2,15 +2,19 @@ import requests
 import json
 
 def emotion_detector(text_to_analyze):
-    """
-    Invia il testo all'API Watson, analizza il JSON ricevuto e restituisce
-    un dizionario formattato con i punteggi e l'emozione dominante.
-    """
     url = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'
     header = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}
     myobj = { "raw_document": { "text": text_to_analyze } }
-    
     response = requests.post(url, json = myobj, headers=header)
+    
+    # Task 7: Gestione errore 400
+    if response.status_code == 400:
+        return {
+            'anger': None, 'disgust': None, 'fear': None, 
+            'joy': None, 'sadness': None, 'dominant_emotion': None
+        }
+    
+
     
     # Task 3: Parsing del JSON
     formatted_response = json.loads(response.text)
